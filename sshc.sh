@@ -68,10 +68,11 @@ case "$1" in
 
     *)
         touching_name="$1"
+        default_touching_env="global"
         if [ $2 ] ; then
             touching_env="$2"
         else
-            touching_env="global"
+            touching_env=$default_touching_env
         fi
         touching_file=$SSHC_PATH'/'$touching_name'/'$touching_env
 
@@ -79,8 +80,16 @@ case "$1" in
             touching_text=$(cat $touching_file)
             ssh $touching_text
         else
-            echo_help
-            exit 1
+            # detect touching_name from current directory and try it
+            project_touching_name=$(basename $PWD)
+            project_touching_file=$SSHC_PATH'/'$project_touching_name'/'$default_touching_env
+            if [ -z "$1" -a -z "$2" -a -f $project_touching_file ] ; then
+                touching_text=$(cat $project_touching_file)
+                ssh $touching_text
+            else
+                echo "sshc shortcut $touching_name $touching_env was not found"
+                exit 1
+            fi
         fi
         exit 0
         ;;
