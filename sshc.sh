@@ -5,6 +5,25 @@ if [ ! -d $SSHC_PATH ] ; then
     mkdir "$SSHC_PATH"
 fi
 
+function echo_help {
+    echo "= ssh + controller = sshc
+* https://github.com/SeTeM/sshc
+
+SSHC is a storage for your SSH connections.
+You don't need to remember username, host or port number from your SSH credentials anymore.
+
+Example:
+
+  sshc --add my_awesome_server production app@my_awesome_server.com
+  sshc my_awesome_server production  #=> ssh app@my_awesome_server.com
+
+More information:
+
+  sshc --help
+
+If you have ideas on how to make the it better, don’t hesitate to fork and send pull requests!"
+}
+
 case "$1" in
     -a | --add)
         touching_name="$2"
@@ -63,7 +82,7 @@ case "$1" in
             found_entrence=$([[ $touching_text =~ $touching_env=([^[:space:]]*) ]]; echo -n "${BASH_REMATCH[1]}")
             ssh "$found_entrence"
         else
-            echo "ERROR"
+            echo_help
             exit 1
         fi
         exit 0
