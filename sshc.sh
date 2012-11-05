@@ -29,30 +29,28 @@ case "$1" in
         touching_name="$2"
         touching_env="$3"
         touching_entrance="$4"
-        touching_file=$SSHC_PATH'/'$touching_name
+        touching_file=$SSHC_PATH'/'$touching_name'/'$touching_env
 
-        touch "$touching_file"
+        mkdir -p $SSHC_PATH'/'$touching_name
 
-        if grep -q '^'$touching_env'=' $touching_file ; then
-            sed -i.bak '
-                /^'$touching_env'=.*/ {
-                    c\
-                        '$touching_env'='$touching_entrance'
-                }' $touching_file
-            echo "Change enviroment '$touching_env' to '$touching_name'"
+        if [ -f $touching_file ] ; then
+            cat /dev/null > $touching_file
+            echo "Changed enviroment '$touching_env' to '$touching_name'"
         else
-            echo $touching_env'='$touching_entrance >> $touching_file
+            touch "$touching_file"
             echo "Added new enviroment '$touching_env' to '$touching_name'"
         fi
+
+        echo $touching_entrance >> $touching_file
 
         exit 0
         ;;
 
     -l | --list)
-        for file in $(find $SSHC_PATH -maxdepth 1 -type f \! -name "*.*") ; do
+        for file in $(find $SSHC_PATH -maxdepth 1 \! -name "*.*") ; do
             echo $(basename $file)":"
-            for line in $(cat $file ) ; do
-                echo "    "$line
+            for line in $(find $file -maxdepth 1 -type f \! -name "*.*") ; do
+                echo "  "$(basename $line)": "$(cat $line)
             done
         done
         exit 0
@@ -70,16 +68,16 @@ case "$1" in
 
     *)
         touching_name="$1"
-        touching_file=$SSHC_PATH'/'$touching_name
+        if [ $2 ] ; then
+            touching_env="$2"
+        else
+            touching_env="global"
+        fi
+        touching_file=$SSHC_PATH'/'$touching_name'/'$touching_env
+
         if [ -f $touching_file ] ; then
-            if [ $2 ] ; then
-                touching_env="$2"
-            else
-                touching_env="global"
-            fi
             touching_text=$(cat $touching_file)
-            found_entrence=$([[ $touching_text =~ $touching_env=([^[:space:]]*) ]]; echo -n "${BASH_REMATCH[1]}")
-            ssh "$found_entrence"
+            ssh $touching_text
         else
             echo_help
             exit 1
