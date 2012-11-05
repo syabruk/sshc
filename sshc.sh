@@ -64,8 +64,7 @@ case "$1" in
         ;;
 
     -h | --help)
-        # TODO
-        echo $0" usage information"
+        echo_help
         exit 0
         ;;
 
