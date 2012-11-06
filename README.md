@@ -23,6 +23,9 @@ And then enable `sshc` plugin in your `oh-my-zsh` config.
     $ sshc server_name test  #=> ssh test@test -p 3001
     $ sshc my_awesome_server  #=> ssh now@127.0.0.1
 
+    $ cd ~/projects/my_awesome_server
+    $ sshc => sshc my_awesome_server global
+
     $ sshc -l
 
     my_awesome_server:
@@ -30,5 +33,7 @@ And then enable `sshc` plugin in your `oh-my-zsh` config.
     server_name:
         development=me@server.com
         test=test@test
+
+    $ sshc --update => fetch fresh version of sshc from git
 
 If you have ideas on how to make the it better, don’t hesitate to fork and send pull requests!

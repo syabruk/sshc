@@ -12,14 +12,26 @@ function echo_help {
 SSHC is a storage for your SSH connections.
 You don't need to remember username, host or port number from your SSH credentials anymore.
 
-Example:
+Usage:
 
-  sshc --add my_awesome_server production app@my_awesome_server.com
-  sshc my_awesome_server production  #=> ssh app@my_awesome_server.com
+  $ sshc --add server_name development me@server.com
+  $ sshc --add my_awesome_server global now@127.0.0.1
+  $ sshc --add server_name test \"test@test -p 3001\"
 
-More information:
+  $ sshc server_name test  #=> ssh me@server.com
+  $ sshc server_name test  #=> ssh test@test -p 3001
+  $ sshc my_awesome_server  #=> ssh now@127.0.0.1
 
-  sshc --help
+  $ cd ~/projects/my_awesome_server
+  $ sshc => sshc my_awesome_server global
+
+  $ sshc -l
+
+  my_awesome_server:
+      global=now@127.0.0.1
+  server_name:
+      development=me@server.com
+      test=test@test
 
 If you have ideas on how to make the it better, don’t hesitate to fork and send pull requests!"
 }
@@ -53,6 +65,13 @@ case "$1" in
                 echo "  "$(basename $line)": "$(cat $line)
             done
         done
+        exit 0
+        ;;
+
+    --update)
+        echo "Updating sshc from git..."
+        cd $(dirname $0)
+        git pull
         exit 0
         ;;
 
