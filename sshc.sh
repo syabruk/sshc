@@ -106,7 +106,11 @@ case "$1" in
                 touching_text=$(cat $project_touching_file)
                 ssh $touching_text
             else
-                echo "sshc shortcut $touching_name $touching_env was not found"
+                if [ $1 ] ; then
+                    echo "sshc shortcut $touching_name $touching_env was not found"
+                else
+                    echo "sshc shortcut $project_touching_name $default_touching_env was not found"
+                fi
                 exit 1
             fi
         fi
