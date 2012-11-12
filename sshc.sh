@@ -59,7 +59,7 @@ case "$1" in
         ;;
 
     -l | --list)
-        for file in $(find $SSHC_PATH -maxdepth 1 \! -name "*.*") ; do
+        for file in $(find $SSHC_PATH/ -mindepth 1 -maxdepth 1 -type d) ; do
             echo $(basename $file)":"
             for line in $(find $file -maxdepth 1 -type f \! -name "*.*") ; do
                 echo "  "$(basename $line)": "$(cat $line)
